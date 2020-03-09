@@ -95,23 +95,27 @@ class ApiController extends Controller
 	    }
     }
 
-    public function createTravel(Request $request) {
+	public function createTravel(Request $request) {
         //Se inserta en tabla viajes
 		$bodyContent = $request->getContent();
 		$xml = simplexml_load_string($bodyContent);
 		$json = json_encode($xml);
 		$array = json_decode($json,TRUE);
-			
+
 		foreach ($array as $item) {
 			foreach ($item as $key => $value) {
+				if (is_array($value)) {
 				Travel::create($item[$key]);
-			}			
+				} else {
+				Travel::create($item);
+				}
+			}
 		}
 
-	    return response()->json([
-	        "message" => "viajes insertados exitosamente"
-	    ], 201);
-    }
+		return response()->json([
+			"message" => "viajes insertados exitosamente"
+		], 201);
+    }	
 
      public function getAllTravels() {
       //Se listan los clientes creados
